@@ -1,103 +1,196 @@
-import Image from "next/image";
+"use client"
+
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { MapIcon, Users, BarChart3 } from "lucide-react"
+
+// estilos para las animaciones y diseño
+const styles = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  body {
+    background-color: #282f33;
+    color: #434546;
+  }
+`
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="w-full flex flex-col min-h-screen justify-center">      <style jsx global>
+        {styles}
+      </style>
+      {/* Navbar */}
+      <header className="sticky top-0 z-40 border-b bg-[#282f33] shadow-md justify-center">
+        <div className="container flex h-16 items-center justify-between px-6 mx-auto max-w">
+          <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105">
+            <span className="text-xl font-bold text-[#2ba4e0]">WaterWay+</span>
+          </div>
+          <nav className="hidden md:flex gap-6">
+            <Link
+              href="#proyecto"
+              className="text-sm font-medium text-white hover:text-[#2ba4e0] transition-colors duration-300"
+            >
+              Proyecto
+            </Link>
+            <Link
+              href="#"
+              className="text-sm font-medium text-white hover:text-[#2ba4e0] transition-colors duration-300"
+            >
+              Acerca de
+            </Link>
+            <Link
+              href="#"
+              className="text-sm font-medium text-white hover:text-[#2ba4e0] transition-colors duration-300"
+            >
+              Contacto
+            </Link>
+          </nav>
+          <div className="flex items-center gap-4">
+            <Button className="bg-[#2ba4e0] hover:bg-[#418fb6] text-white transition-all duration-300 hover:scale-105 px-4 py-2 rounded-lg shadow-lg">
+              Iniciar Sesión
+            </Button>
+          </div>
         </div>
+      </header>
+
+      <main className="flex-1">
+
+        {/* Hero Section */}
+        <section
+            className="relative bg-cover bg-center text-white mx-auto max-w"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(40, 47, 51, 0.6), rgba(40, 47, 51, 0.6)), url('https://www.portalambiental.com.mx/sites/default/files/media/image/2021/08/rio_motagua.jpeg')",
+            }}
+          >
+            <div className="container relative z-10 py-32 md:py-48 flex flex-col items-center text-center px-6 mx-auto max-w">
+              <div className="space-y-8 max-w-4xl mx-auto">
+                <h1 className="text-4xl md:text-6xl font-bold mb-6 opacity-0 animate-[fadeIn_1s_ease-in-out_0.2s_forwards]">
+                  Protegiendo el Río Motagua
+                </h1>
+                <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 opacity-0 animate-[fadeIn_1s_ease-in-out_0.6s_forwards]">
+                  Una plataforma para analizar, visualizar y combatir la contaminación del Río Motagua utilizando la red
+                  Copernicus y la colaboración ciudadana.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-[fadeIn_1s_ease-in-out_1s_forwards]">
+                  <Button className="bg-[#2ba4e0] hover:bg-[#418fb6] text-white transition-all duration-300 hover:scale-105 px-8 py-6 text-lg rounded-lg shadow-lg">
+                    Registrarse
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-white text-[#418fb6] hover:bg-white/10 transition-all duration-300 hover:scale-105 px-8 py-6 text-lg rounded-lg"
+                  >
+                    Conocer más
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+        {/* Proyecto Section */}
+        <section id="proyecto" className="py-24 bg-white relative overflow-hidden">
+          <div className="container relative px-6 mx-auto max-w ">
+            <div className="flex flex-col items-center text-center mb-16">
+              <h2
+                className="text-3xl md:text-4xl font-bold text-[#282f33] mb-6 opacity-0 animate-[fadeInUp_0.8s_ease-in-out_0.2s_forwards]"
+                style={{ animationFillMode: "forwards" }}
+              >
+                Sobre el Proyecto
+              </h2>
+              <p
+                className="text-lg md:text-xl text-[#434546] max-w-3xl opacity-0 animate-[fadeInUp_0.8s_ease-in-out_0.4s_forwards]"
+                style={{ animationFillMode: "forwards" }}
+              >
+                WaterWay es un portal que utiliza datos satelitales de la red Copernicus para determinar y proponer
+                soluciones a la contaminación del Río Motagua. Nuestro objetivo es concientizar acerca del cuidado del
+                medio ambiente a través de la evidencia recaudada.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="border-[#418fb6]/20 h-full transition-all duration-500 hover:scale-[1.03] hover:shadow-xl hover:border-[#2ba4e0]/70">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-[#418fb6] flex items-center gap-2">
+                    <MapIcon className="h-5 w-5" />
+                    Análisis de Datos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[#434546]">
+                    Utilizamos datos satelitales de Copernicus para monitorear la calidad del agua y detectar fuentes
+                    de contaminación en tiempo real.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-[#418fb6]/20 h-full transition-all duration-500 hover:scale-[1.03] hover:shadow-xl hover:border-[#2ba4e0]/70">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-[#418fb6] flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Colaboración Comunitaria
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[#434546]">
+                    Involucramos a ciudadanos, investigadores, empresas y autoridades en la identificación y solución
+                    de problemas ambientales.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-[#418fb6]/20 h-full transition-all duration-500 hover:scale-[1.03] hover:shadow-xl hover:border-[#2ba4e0]/70">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-[#418fb6] flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Visualización Interactiva
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[#434546]">
+                    Ofrecemos mapas interactivos, reportes y visualizaciones que facilitan la comprensión de los datos
+                    y la toma de decisiones.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="border-t bg-[#282f33] py-8">
+        <div className="container flex flex-col md:flex-row justify-between items-center px-6">
+          <div className="flex items-center gap-2 mb-4 md:mb-0 transition-all duration-300 hover:scale-105">
+            <MapIcon className="h-6 w-6 text-[#2ba4e0]" />
+            <span className="text-xl font-bold text-white">WaterWay</span>
+          </div>
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+            <Link href="#" className="text-sm text-white/80 hover:text-[#2ba4e0] transition-colors duration-300">
+              Términos y Condiciones
+            </Link>
+            <Link href="#" className="text-sm text-white/80 hover:text-[#2ba4e0] transition-colors duration-300">
+              Política de Privacidad
+            </Link>
+            <Link href="#" className="text-sm text-white/80 hover:text-[#2ba4e0] transition-colors duration-300">
+              Contacto
+            </Link>
+          </div>
+          <div className="mt-4 md:mt-0 text-sm text-white/60">© 2025 WaterWay. Todos los derechos reservados.</div>
+        </div>
       </footer>
     </div>
-  );
+  )
 }
