@@ -19,6 +19,10 @@ export const authOptions: NextAuthOptions = {
       issuer: process.env.KEYCLOAK_ISSUER!,
     }),
   ],
+  pages:{
+    signIn: "/login",
+    newUser: "/register",
+  },
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
