@@ -1,6 +1,5 @@
-@import "tailwindcss";@import "tw-animate-css";
-
-
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @layer base {
   :root {
@@ -88,7 +87,5 @@
     --sidebar-accent-foreground: 210 40% 98%;
   }
 }
-
-
 
 

@@ -2,10 +2,13 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Providers } from "@/app/provider"
+import { Sidebar } from "@/components/sidebar"
+import { ConfigProvider } from "@/contexts/config-context"
+import { ConfigNotification } from "@/components/config-notification"
+
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,12 +27,13 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="light">
-            <SidebarProvider>
+            <ConfigProvider>
               <div className="flex min-h-screen w-full">
-                <AppSidebar />
+                <Sidebar />
                 <main className="flex-1">{children}</main>
               </div>
-            </SidebarProvider>
+              <ConfigNotification />
+            </ConfigProvider>
           </ThemeProvider>
         </Providers>
       </body>
