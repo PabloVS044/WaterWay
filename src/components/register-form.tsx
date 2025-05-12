@@ -7,22 +7,24 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import * as Label from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
-import { WavesIcon, User, X } from "lucide-react"
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { User, X } from "lucide-react"
 import Image from "next/image"
-
-const cn = (...inputs: any[]) => {
-  return twMerge(clsx(inputs))
-}
+import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { signup } from "@/services/auth"
+import { signIn } from "next-auth/react";
+import { z } from "zod"
+import data from "@react-google-maps/api/src/components/drawing/Data";
+import { toast } from "react-toastify";
 
 const Button = ({
-  className,
-  asChild = false,
-  disabled,
-  children,
-  ...props
-}: {
+                  className,
+                  asChild = false,
+                  disabled,
+                  children,
+                  ...props
+                }: {
   className?: string
   asChild?: boolean
   disabled?: boolean
@@ -48,10 +50,10 @@ const Button = ({
 }
 
 const Input = ({
-  className,
-  type = "text",
-  ...props
-}: {
+                 className,
+                 type = "text",
+                 ...props
+               }: {
   className?: string
   type?: string
   [key: string]: any
@@ -70,16 +72,28 @@ const Input = ({
   )
 }
 
+const registrationSchema = z.object({
+  firstName: z.string().min(1, { message: "Nombre es requerido" }),
+  lastName: z.string().min(1, { message: "Apellido es requerido" }),
+  email: z.string().email({ message: "Correo electrónico inválido" }),
+  password: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+})
+
+type RegistrationFormData = z.infer<typeof registrationSchema>
+
 export function RegisterForm() {
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [profileImage, setProfileImage] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegistrationFormData>({
+    resolver: zodResolver(registrationSchema)
+  })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -101,31 +115,39 @@ export function RegisterForm() {
     }
   }
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault()
-    setIsLoading(true)
-
+  const onSubmit = async (data: RegistrationFormData) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Simulate API call
+      const res = await signup({
+        ...data,
+        name: data.firstName,
+        last_name: data.lastName,
+        // for now lets assume we can only signup as user
+        role: "user"
+      })
+      if (res.error) {
+        toast.error(
+          "Error trying to create a user"
+        )
+        return;
+      }
+      const user = res.data!
 
-      router.push("/login?registered=true")
+      await signIn("credentials", { email: user.email, password: data.password, callbackUrl: "/"
+      })
     } catch (error) {
       console.error("Registration failed", error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">
-        <div className="flex justify-center">
-        </div>
         <h1 className="text-5xl font-bold text-[#282F33]">Crear cuenta</h1>
         <p className="text-[#434546]">Regístrate para formar parte de WaterWay+</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="mb-6 text-center">
           {previewUrl ? (
             <div className="relative w-28 h-28 mx-auto">
@@ -133,13 +155,15 @@ export function RegisterForm() {
                 src={previewUrl || "/placeholder.svg"}
                 alt="Vista previa"
                 className="w-28 h-28 rounded-full object-cover border-2 border-[#2BA4E0]"
+                width={112}
+                height={112}
               />
               <button
                 type="button"
                 onClick={removeImage}
                 className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md border border-gray-200"
               >
-                <X className="h-4 w-4 text-[#282F33]" />
+                <X className="h-4 w-4 text-[#282F33]"/>
               </button>
             </div>
           ) : (
@@ -147,8 +171,9 @@ export function RegisterForm() {
               onClick={() => fileInputRef.current?.click()}
               className="mx-auto flex flex-col items-center cursor-pointer group"
             >
-              <div className="w-24 h-24 rounded-full bg-[#435761]/5 flex items-center justify-center group-hover:bg-[#2BA4E0]/10 transition-colors">
-                <User className="h-12 w-12 text-[#418FB6] stroke-[1.25]" />
+              <div
+                className="w-24 h-24 rounded-full bg-[#435761]/5 flex items-center justify-center group-hover:bg-[#2BA4E0]/10 transition-colors">
+                <User className="h-12 w-12 text-[#418FB6] stroke-[1.25]"/>
               </div>
               <span className="text-xs text-[#434546]/70 mt-2">Subir foto de perfil</span>
             </div>
@@ -171,10 +196,11 @@ export function RegisterForm() {
             <Input
               id="firstName"
               placeholder="Juan"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
+              {...register('firstName')}
             />
+            {errors.firstName && (
+              <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label.Root htmlFor="lastName" className="text-sm font-medium text-[#282F33]">
@@ -183,10 +209,11 @@ export function RegisterForm() {
             <Input
               id="lastName"
               placeholder="Pérez"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
+              {...register('lastName')}
             />
+            {errors.lastName && (
+              <p className="text-red-500 text-xs mt-1">{errors.lastName.message}</p>
+            )}
           </div>
         </div>
 
@@ -198,10 +225,11 @@ export function RegisterForm() {
             id="email"
             type="email"
             placeholder="tu@ejemplo.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...register('email')}
           />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -212,15 +240,19 @@ export function RegisterForm() {
             id="password"
             type="password"
             placeholder="Mínimo 8 caracteres"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
+            {...register('password')}
           />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+          )}
         </div>
 
-        <Button type="submit" className="w-full mt-6" disabled={isLoading}>
-          {isLoading ? "Creando cuenta..." : "Crear cuenta"}
+        <Button
+          type="submit"
+          className="w-full mt-6"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Creando cuenta..." : "Crear cuenta"}
         </Button>
       </form>
 

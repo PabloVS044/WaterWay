@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState } from "react"
-import { toast } from "sonner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -57,8 +56,29 @@ export default function ModeracionReportesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [tipoFiltro, setTipoFiltro] = useState("todos")
   const [mostrarResueltos, setMostrarResueltos] = useState(false)
-  const [reportes, setReportes] = useState(reportesMock)
-  const [filteredReportes, setFilteredReportes] = useState(reportesMock)
+  interface Reporte {
+    id: string
+    titulo: string
+    descripcion: string
+    tipo: string
+    fecha: string
+    ubicacion: string
+    coordenadas: { lat: number; lng: number }
+    estado: string
+    resuelto: boolean
+    imagenes: string[]
+    usuario: { id: string; nombre: string; avatar: string }
+    razonRechazo?: string
+    comentarios?: { id: string; texto: string; fecha: string; usuario: { id: string; nombre: string; avatar: string; rol: string }; likes: number }[]
+  }
+  
+  const [reportes, setReportes] = useState<Reporte[]>(reportesMock)
+  const [filteredReportes, setFilteredReportes] = useState<Reporte[]>(
+    reportesMock.map((reporte) => ({
+      ...reporte,
+      razonRechazo: reporte.razonRechazo || "",
+    }))
+  )
   const [selectedReporte, setSelectedReporte] = useState<string | null>(null)
   const [rechazoRazon, setRechazoRazon] = useState("")
   const [showRechazoDialog, setShowRechazoDialog] = useState(false)
@@ -88,7 +108,12 @@ export default function ModeracionReportesPage() {
       filtered = filtered.filter((reporte) => reporte.tipo === tipo)
     }
 
-    // Filtrar por estado (resuelto/no resuelto)
+    setFilteredReportes(
+      filtered.map((reporte) => ({
+        ...reporte,
+        razonRechazo: reporte.razonRechazo || "",
+      }))
+    )
     if (!mostrarResueltos) {
       filtered = filtered.filter((reporte) => !reporte.resuelto)
     }
@@ -120,10 +145,6 @@ export default function ModeracionReportesPage() {
     )
     setReportes(updatedReportes)
     filterReportes(searchTerm, tipoFiltro, mostrarResueltos)
-
-    toast.success("Reporte aprobado", {
-      description: "El reporte ha sido aprobado y ahora es visible para todos los usuarios.",
-    })
   }
 
   const handleRechazarReporte = (id: string) => {
@@ -142,10 +163,6 @@ export default function ModeracionReportesPage() {
     filterReportes(searchTerm, tipoFiltro, mostrarResueltos)
     setShowRechazoDialog(false)
     setRechazoRazon("")
-
-    toast.error("Reporte rechazado", {
-      description: "Se ha notificado al usuario sobre el rechazo de su reporte.",
-    })
   }
 
   return (
@@ -473,7 +490,7 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
 
         <div className="flex justify-end mt-4 pt-2 border-t border-gray-100">
           <div className="flex gap-2">
-            <Link href={`/reportes/${reporte.id}`}>
+            <Link href={`/src/app/(with-sidebar)/reportes/${reporte.id}`}>
               <Button variant="outline" size="sm" className="text-[#434546]">
                 <Eye className="mr-1 h-4 w-4" /> Ver detalles
               </Button>

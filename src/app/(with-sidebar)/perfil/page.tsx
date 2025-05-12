@@ -233,7 +233,7 @@ export default function PerfilPage() {
                       {misReportes.length === 0 ? (
                         <div className="text-center py-8">
                           <p className="text-[#434546] mb-4">No has creado ningún reporte aún.</p>
-                          <Link href="/reportes/crear">
+                          <Link href="/src/app/(with-sidebar)/reportes/crear">
                             <Button className="bg-[#2ba4e0] hover:bg-[#418fb6] text-white">
                               Crear mi primer reporte
                             </Button>
@@ -242,7 +242,7 @@ export default function PerfilPage() {
                       ) : (
                         <div className="space-y-4">
                           {misReportes.map((reporte) => (
-                            <Link href={`/reportes/${reporte.id}`} key={reporte.id}>
+                            <Link href={`/src/app/(with-sidebar)/reportes/${reporte.id}`} key={reporte.id}>
                               <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                                   {reporte.imagenes && reporte.imagenes.length > 0 ? (

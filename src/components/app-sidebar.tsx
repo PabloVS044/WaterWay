@@ -50,7 +50,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname === "/reportes/mapa"}>
-              <Link href="/reportes/mapa">
+              <Link href="/src/app/(with-sidebar)/reportes/mapa">
                 <Map className="mr-2 h-5 w-5" />
                 <span>Mapa de reportes</span>
               </Link>
@@ -58,7 +58,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname === "/reportes/crear"}>
-              <Link href="/reportes/crear">
+              <Link href="/src/app/(with-sidebar)/reportes/crear">
                 <FileText className="mr-2 h-5 w-5" />
                 <span>Crear reporte</span>
               </Link>
@@ -66,7 +66,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname === "/reportes/mis-reportes"}>
-              <Link href="/reportes/mis-reportes">
+              <Link href="/src/app/(with-sidebar)/reportes/mis-reportes">
                 <ClipboardList className="mr-2 h-5 w-5" />
                 <span>Mis reportes</span>
               </Link>
@@ -79,7 +79,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname.startsWith("/moderacion")}>
-              <Link href="/moderacion/reportes">
+              <Link href="/src/app/(with-sidebar)/moderacion/reportes">
                 <ShieldAlert className="mr-2 h-5 w-5" />
                 <span>Moderación</span>
               </Link>

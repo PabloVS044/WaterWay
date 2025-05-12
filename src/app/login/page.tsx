@@ -1,16 +1,28 @@
-import { LoginForm } from "@/components/login-form"
+import { LoggedInView, LoginForm } from "@/components/login-form"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await getServerSession(authOptions)
+
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
-          <LoginForm />
+          {!session && (
+            <LoginForm/>
+          )}
+          {session && (
+            /*Already logged in page*/
+            <LoggedInView session={session}/>
+          )}
         </div>
       </div>
 
       <div className="w-full md:w-1/2 bg-blue-100 relative hidden md:block">
-        <div className="absolute inset-0 bg-black/20 z-10" />
+        <div className="absolute inset-0 bg-black/20 z-10"/>
         <div
           className="absolute inset-0 bg-cover bg-center z-0"
           style={{

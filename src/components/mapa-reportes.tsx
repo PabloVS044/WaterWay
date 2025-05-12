@@ -96,7 +96,7 @@ export default function MapaReportes({ reportes, center = { lat: 15.4842, lng: -
               {selectedReporte.imagenes?.[0] && (
                 <img src={selectedReporte.imagenes[0]} alt="Imagen" className="mb-2 w-full h-20 object-cover rounded" />
               )}
-              <Link href={`/reportes/${selectedReporte.id}`}>
+              <Link href={`/src/app/(with-sidebar)/reportes/${selectedReporte.id}`}>
                 <Button className="w-full bg-[#2ba4e0] hover:bg-[#418fb6] text-white">Ver detalles</Button>
               </Link>
             </div>

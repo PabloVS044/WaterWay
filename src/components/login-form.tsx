@@ -1,28 +1,26 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import * as Label from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
-import { WavesIcon } from "lucide-react"
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-// Utility function for class names
-const cn = (...inputs: any[]) => {
-  return twMerge(clsx(inputs))
-}
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "@/lib/utils";
+import { signIn, signOut } from "next-auth/react";
+import { toast } from "react-toastify";
+import { Session } from "next-auth";
 
 // Button component using Radix Slot
 const Button = ({
-  className,
-  asChild = false,
-  disabled,
-  children,
-  ...props
-}: {
+                  className,
+                  asChild = false,
+                  disabled,
+                  children,
+                  ...props
+                }: {
   className?: string
   asChild?: boolean
   disabled?: boolean
@@ -48,10 +46,10 @@ const Button = ({
 }
 
 const Input = ({
-  className,
-  type = "text",
-  ...props
-}: {
+                 className,
+                 type = "text",
+                 ...props
+               }: {
   className?: string
   type?: string
   [key: string]: any
@@ -70,39 +68,48 @@ const Input = ({
   )
 }
 
+const loginSchema = z.object({
+  email: z.string().email("Correo inválido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+})
+
+type LoginData = z.infer<typeof loginSchema>
+
 export function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+  })
+
   const router = useRouter()
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault()
-    setIsLoading(true)
-
+  const onSubmit = async (data: LoginData) => {
     try {
-      // This would be replaced with your actual authentication logic
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Redirect to dashboard after successful login
-      router.push("/dashboard")
-    } catch (error) {
-      console.error("Login failed", error)
-    } finally {
-      setIsLoading(false)
+      const res = await signIn("credentials", { ...data, redirect: false })
+      console.log(res)
+      if (!res?.ok) {
+        console.log(res?.error)
+        toast.error("No se pudo iniciar sesion")
+        return;
+      }
+      router.push("/")
+    } catch (err) {
+      console.error("Login failed:", err);
     }
-  }
+  };
+
 
   return (
     <div className="space-y-6 text-black">
-      <div className="space-y-2 text-center text-black">
-        <div className="flex justify-center">
-        </div>
+      <div className="space-y-2 text-center">
         <h1 className="text-5xl font-bold">Bienvenido</h1>
         <p className="text-gray-500">Inicia sesión para acceder a WaterWay+</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label.Root htmlFor="email" className="text-sm font-medium">
             Correo electrónico
@@ -111,10 +118,11 @@ export function LoginForm() {
             id="email"
             type="email"
             placeholder="tu@ejemplo.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...register("email")}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -130,14 +138,15 @@ export function LoginForm() {
             id="password"
             type="password"
             placeholder="********"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            {...register("password")}
           />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
         </div>
 
-        <Button type="submit" className="w-full " disabled={isLoading}>
-          {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
         </Button>
       </form>
 
@@ -149,6 +158,31 @@ export function LoginForm() {
           </Link>
         </p>
       </div>
+    </div>
+  )
+}
+
+export function LoggedInView({ session }: { session: Session }) {
+  return (
+    <div className="space-y-6 text-center">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Bienvenido</h1>
+        <p className="text-gray-600">Has iniciado sesión correctamente</p>
+        {session?.user?.email && (
+          <p className="text-sm text-gray-500">{session.user.email}</p>
+        )}
+      </div>
+
+      <Button
+        onClick={() => {
+          signOut().catch(() => {
+            toast.error("No se ha podido hacer correctamente log out")
+          })
+        }}
+        className="w-full"
+      >
+        Cerrar sesión
+      </Button>
     </div>
   )
 }
