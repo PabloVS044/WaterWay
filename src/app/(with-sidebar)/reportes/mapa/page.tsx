@@ -78,7 +78,7 @@ export default function MapaReportesPage() {
             <h1 className="text-3xl font-bold text-[#282f33]">Mapa de reportes</h1>
             <p className="text-[#434546]">Explora los reportes de problemas ambientales en el Río Motagua</p>
           </div>
-          <Link href="/reportes/crear">
+          <Link href="/src/app/(with-sidebar)/reportes/crear">
             <Button className="bg-[#2ba4e0] hover:bg-[#418fb6] text-white">
               <Plus className="mr-2 h-4 w-4" /> Crear reporte
             </Button>
@@ -154,7 +154,7 @@ export default function MapaReportesPage() {
                 <ScrollArea className="h-[400px] pr-4">
                   <div className="space-y-3">
                     {filteredReportes.slice(0, 5).map((reporte) => (
-                      <Link href={`/reportes/${reporte.id}`} key={reporte.id}>
+                      <Link href={`/src/app/(with-sidebar)/reportes/${reporte.id}`} key={reporte.id}>
                         <div
                           className={`p-3 rounded-lg hover:bg-gray-100 transition cursor-pointer ${
                             selectedReporte === reporte.id ? "bg-gray-100" : ""
@@ -223,7 +223,7 @@ export default function MapaReportesPage() {
                         </div>
                       ) : (
                         filteredReportes.map((reporte) => (
-                          <Link href={`/reportes/${reporte.id}`} key={reporte.id}>
+                          <Link href={`/src/app/(with-sidebar)/reportes/${reporte.id}`} key={reporte.id}>
                             <Card
                               className={`hover:shadow-md transition cursor-pointer ${
                                 selectedReporte === reporte.id ? "border-[#2ba4e0]" : ""

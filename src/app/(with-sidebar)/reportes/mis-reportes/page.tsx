@@ -113,7 +113,7 @@ export default function MisReportesPage() {
             <h1 className="text-3xl font-bold text-[#282f33]">Mis reportes</h1>
             <p className="text-[#434546]">Gestiona y haz seguimiento a los reportes que has enviado</p>
           </div>
-          <Link href="/reportes/crear">
+          <Link href="/src/app/(with-sidebar)/reportes/crear">
             <Button className="bg-[#2ba4e0] hover:bg-[#418fb6] text-white">
               <Plus className="mr-2 h-4 w-4" /> Crear reporte
             </Button>
@@ -157,7 +157,7 @@ export default function MisReportesPage() {
                     {filteredReportes.length === 0 ? (
                       <div className="text-center py-12">
                         <p className="text-[#434546]">No has creado ningún reporte aún.</p>
-                        <Link href="/reportes/crear">
+                        <Link href="/src/app/(with-sidebar)/reportes/crear">
                           <Button className="mt-4 bg-[#2ba4e0] hover:bg-[#418fb6] text-white">
                             <Plus className="mr-2 h-4 w-4" /> Crear tu primer reporte
                           </Button>
@@ -266,7 +266,7 @@ interface ReporteCardProps {
 
 function ReporteCard({ reporte, getEstadoBadge }: ReporteCardProps) {
   return (
-    <Link href={`/reportes/${reporte.id}`}>
+    <Link href={`/src/app/(with-sidebar)/reportes/${reporte.id}`}>
       <Card className="hover:shadow-md transition cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-start gap-4">

@@ -117,7 +117,7 @@ export default function DashboardPage() {
                   <MapPreview />
                 </div>
                 <div className="p-4">
-                  <Link href="/reportes/mapa">
+                  <Link href="/src/app/(with-sidebar)/reportes/mapa">
                     <Button className="w-full bg-[#2ba4e0] hover:bg-[#418fb6] text-white">
                       Ver mapa completo <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -218,7 +218,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <Link href="/reportes/mis-reportes">
+                  <Link href="/src/app/(with-sidebar)/reportes/mis-reportes">
                     <Button variant="outline" className="text-[#2ba4e0] border-[#2ba4e0] hover:bg-[#2ba4e0]/10">
                       Ver todos los reportes <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
