@@ -1,42 +1,35 @@
-import KeycloakProvider from "next-auth/providers/keycloak";
+import Auth0Provider from "next-auth/providers/auth0";
 import { NextAuthOptions } from "next-auth";
-
-interface KeycloakProfile {
-  realm_access?: {
-    roles: string[]
-  }
-}
-
-const validRoles = ["admin", "user", "researcher", "moderator"] as const;
-type Role = typeof validRoles[number];
-
+import { Role } from "../../next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    KeycloakProvider({
-      clientId: process.env.KEYCLOAK_CLIENT_ID!,
-      clientSecret: process.env.KEYCLOAK_CLIENT_SECRET!,
-      issuer: process.env.KEYCLOAK_ISSUER!,
+    Auth0Provider({
+      clientId: process.env.AUTH0_CLIENT_ID!,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET!,
+      issuer: process.env.AUTH0_DOMAIN,
     }),
   ],
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub!
-        session.user.roles = token.roles as string[]
+        session.user.id = token.sub!;
+        session.user.roles = token.roles as Role[] || [];
       }
-      return session
+      return session;
     },
     async jwt({ token, account, profile }) {
       if (account && profile) {
-        const keycloakProfile = profile as KeycloakProfile
-        console.log(keycloakProfile)
-        token.roles = keycloakProfile.realm_access?.roles.filter(r => validRoles.includes(r as Role)) || []
+        // Extract roles from namespaced claim
+        console.log(profile)
+        const claims = profile as never;
+        token.roles = claims["https://waterway.dev/roles"] || [];
       }
-      return token
+      return token;
     },
   },
   session: {
     strategy: "jwt",
   },
+  secret: process.env.AUTH0_SECRET,
 };

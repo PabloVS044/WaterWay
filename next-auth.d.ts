@@ -5,7 +5,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string
-      roles: string[]
+      roles: Role[]
       name?: string | null
       email?: string | null
       image?: string | null
@@ -13,6 +13,8 @@ declare module "next-auth" {
   }
 
   interface JWT {
-    roles: string[]
+    roles: Role[]
   }
 }
+
+export type Role = { id: string, name: "user" | "researcher" | "moderator" | "admin" | "company", description: string }
