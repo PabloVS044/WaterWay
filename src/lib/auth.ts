@@ -10,6 +10,10 @@ export const authOptions: NextAuthOptions = {
       issuer: process.env.AUTH0_DOMAIN,
     }),
   ],
+  pages:{
+    signIn: "/login",
+    newUser: "/register",
+  },
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
