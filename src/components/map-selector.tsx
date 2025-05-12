@@ -1,7 +1,4 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
-import { MapPin } from "lucide-react"
 
 interface MapSelectorProps {
   onLocationSelect: (location: { lat: number; lng: number }) => void;

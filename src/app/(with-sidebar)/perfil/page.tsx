@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { reportesMock } from "@/data/reportes-mock"
 import Link from "next/link"
+import Image from "next/image";
 
 // Datos de ejemplo del usuario
 const userData = {
@@ -246,7 +247,7 @@ export default function PerfilPage() {
                               <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                                   {reporte.imagenes && reporte.imagenes.length > 0 ? (
-                                    <img
+                                    <Image
                                       src={reporte.imagenes[0] || "/placeholder.svg"}
                                       alt={reporte.titulo}
                                       className="w-full h-full object-cover"

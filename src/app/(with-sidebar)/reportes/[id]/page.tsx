@@ -39,6 +39,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import { Reporte } from "@/app/(with-sidebar)/moderacion/reportes/page";
+import Image from "next/image";
 
 const tiposReporte = [
   { id: "todos", nombre: "Todos los tipos" },
@@ -403,7 +405,7 @@ export default function ModeracionReportesPage() {
 }
 
 interface ModeracionReporteCardProps {
-  reporte: any
+  reporte: Reporte,
   onAprobar: (id: string) => void
   onRechazar: (id: string) => void
   soloVer?: boolean
@@ -416,7 +418,7 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
         <div className="flex items-start gap-4">
           <div className="w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
             {reporte.imagenes && reporte.imagenes.length > 0 ? (
-              <img
+              <Image
                 src={reporte.imagenes[0] || "/placeholder.svg"}
                 alt={reporte.titulo}
                 className="w-full h-full object-cover"

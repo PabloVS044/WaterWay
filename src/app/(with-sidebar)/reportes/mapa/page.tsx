@@ -33,7 +33,7 @@ const tiposReporte = [
 
 export default function MapaReportesPage() {
   const [activeTab, setActiveTab] = useState("mapa")
-  const [reportes, setReportes] = useState(reportesMock)
+  const [reportes] = useState(reportesMock)
   const [filteredReportes, setFilteredReportes] = useState(reportesMock)
   const [searchTerm, setSearchTerm] = useState("")
   const [tipoFiltro, setTipoFiltro] = useState("todos")

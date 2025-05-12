@@ -38,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import Image from "next/image";
 
 const tiposReporte = [
   { id: "todos", nombre: "Todos los tipos" },
@@ -52,26 +53,33 @@ const tiposReporte = [
   { id: "otro", nombre: "Otro problema" },
 ]
 
+export interface Reporte {
+  id: string
+  titulo: string
+  descripcion: string
+  tipo: string
+  fecha: string
+  ubicacion: string
+  coordenadas: { lat: number; lng: number }
+  estado: string
+  resuelto: boolean
+  imagenes: string[]
+  usuario: { id: string; nombre: string; avatar: string }
+  razonRechazo?: string
+  comentarios?: {
+    id: string;
+    texto: string;
+    fecha: string;
+    usuario: { id: string; nombre: string; avatar: string; rol: string };
+    likes: number
+  }[]
+}
+
+
 export default function ModeracionReportesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [tipoFiltro, setTipoFiltro] = useState("todos")
   const [mostrarResueltos, setMostrarResueltos] = useState(false)
-  interface Reporte {
-    id: string
-    titulo: string
-    descripcion: string
-    tipo: string
-    fecha: string
-    ubicacion: string
-    coordenadas: { lat: number; lng: number }
-    estado: string
-    resuelto: boolean
-    imagenes: string[]
-    usuario: { id: string; nombre: string; avatar: string }
-    razonRechazo?: string
-    comentarios?: { id: string; texto: string; fecha: string; usuario: { id: string; nombre: string; avatar: string; rol: string }; likes: number }[]
-  }
-  
   const [reportes, setReportes] = useState<Reporte[]>(reportesMock)
   const [filteredReportes, setFilteredReportes] = useState<Reporte[]>(
     reportesMock.map((reporte) => ({
@@ -179,7 +187,7 @@ export default function ModeracionReportesPage() {
           <Card className="bg-[#418fb6]/10">
             <CardContent className="p-4 flex items-center">
               <div className="bg-[#418fb6] rounded-full p-3 mr-4">
-                <Clock className="h-5 w-5 text-white" />
+                <Clock className="h-5 w-5 text-white"/>
               </div>
               <div>
                 <p className="text-sm text-[#434546]">Pendientes</p>
@@ -190,7 +198,7 @@ export default function ModeracionReportesPage() {
           <Card className="bg-[#2ba4e0]/10">
             <CardContent className="p-4 flex items-center">
               <div className="bg-[#2ba4e0] rounded-full p-3 mr-4">
-                <AlertTriangle className="h-5 w-5 text-white" />
+                <AlertTriangle className="h-5 w-5 text-white"/>
               </div>
               <div>
                 <p className="text-sm text-[#434546]">En revisión</p>
@@ -201,7 +209,7 @@ export default function ModeracionReportesPage() {
           <Card className="bg-green-100">
             <CardContent className="p-4 flex items-center">
               <div className="bg-green-600 rounded-full p-3 mr-4">
-                <CheckCircle2 className="h-5 w-5 text-white" />
+                <CheckCircle2 className="h-5 w-5 text-white"/>
               </div>
               <div>
                 <p className="text-sm text-green-800">Aprobados</p>
@@ -212,7 +220,7 @@ export default function ModeracionReportesPage() {
           <Card className="bg-red-100">
             <CardContent className="p-4 flex items-center">
               <div className="bg-red-600 rounded-full p-3 mr-4">
-                <X className="h-5 w-5 text-white" />
+                <X className="h-5 w-5 text-white"/>
               </div>
               <div>
                 <p className="text-sm text-red-800">Rechazados</p>
@@ -227,8 +235,8 @@ export default function ModeracionReportesPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                  <Input placeholder="Buscar reportes..." className="pl-8" value={searchTerm} onChange={handleSearch} />
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500"/>
+                  <Input placeholder="Buscar reportes..." className="pl-8" value={searchTerm} onChange={handleSearch}/>
                 </div>
               </CardContent>
             </Card>
@@ -236,14 +244,14 @@ export default function ModeracionReportesPage() {
             <Card>
               <CardContent className="p-4 space-y-4">
                 <div className="font-medium text-[#282f33] flex items-center">
-                  <Filter className="mr-2 h-4 w-4" /> Filtros
+                  <Filter className="mr-2 h-4 w-4"/> Filtros
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="tipo-filtro">Tipo de problema</Label>
                   <Select value={tipoFiltro} onValueChange={handleTipoChange}>
                     <SelectTrigger id="tipo-filtro">
-                      <SelectValue placeholder="Todos los tipos" />
+                      <SelectValue placeholder="Todos los tipos"/>
                     </SelectTrigger>
                     <SelectContent>
                       {tiposReporte.map((tipo) => (
@@ -420,7 +428,7 @@ export default function ModeracionReportesPage() {
 }
 
 interface ModeracionReporteCardProps {
-  reporte: any
+  reporte: Reporte,
   onAprobar: (id: string) => void
   onRechazar: (id: string) => void
   soloVer?: boolean
@@ -433,14 +441,14 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
         <div className="flex items-start gap-4">
           <div className="w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
             {reporte.imagenes && reporte.imagenes.length > 0 ? (
-              <img
+              <Image
                 src={reporte.imagenes[0] || "/placeholder.svg"}
                 alt={reporte.titulo}
                 className="w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#418fb6]/10">
-                <MapPin className="h-8 w-8 text-[#418fb6]" />
+                <MapPin className="h-8 w-8 text-[#418fb6]"/>
               </div>
             )}
           </div>
@@ -464,7 +472,7 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
             </div>
             <p className="text-sm text-[#434546] line-clamp-2 mt-1">{reporte.descripcion}</p>
             <div className="flex items-center mt-2 text-xs text-[#434546]">
-              <MapPin className="h-3 w-3 mr-1" />
+              <MapPin className="h-3 w-3 mr-1"/>
               <span>{reporte.ubicacion}</span>
             </div>
             <div className="flex items-center justify-between mt-2">
@@ -473,13 +481,13 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
                   {tiposReporte.find((t) => t.id === reporte.tipo)?.nombre || reporte.tipo}
                 </Badge>
                 <div className="flex items-center text-xs text-[#434546]">
-                  <Calendar className="h-3 w-3 mr-1" />
+                  <Calendar className="h-3 w-3 mr-1"/>
                   <span>{reporte.fecha}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Avatar className="h-5 w-5">
-                  <AvatarImage src={reporte.usuario.avatar || "/placeholder.svg"} alt={reporte.usuario.nombre} />
+                  <AvatarImage src={reporte.usuario.avatar || "/placeholder.svg"} alt={reporte.usuario.nombre}/>
                   <AvatarFallback>{reporte.usuario.nombre.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span className="text-xs">{reporte.usuario.nombre}</span>
@@ -492,14 +500,14 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
           <div className="flex gap-2">
             <Link href={`/src/app/(with-sidebar)/reportes/${reporte.id}`}>
               <Button variant="outline" size="sm" className="text-[#434546]">
-                <Eye className="mr-1 h-4 w-4" /> Ver detalles
+                <Eye className="mr-1 h-4 w-4"/> Ver detalles
               </Button>
             </Link>
 
             {!soloVer && (
               <>
                 <Button variant="outline" size="sm" className="text-[#434546]">
-                  <Edit className="mr-1 h-4 w-4" /> Editar
+                  <Edit className="mr-1 h-4 w-4"/> Editar
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -509,10 +517,10 @@ function ModeracionReporteCard({ reporte, onAprobar, onRechazar, soloVer = false
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem className="text-green-600 cursor-pointer" onClick={() => onAprobar(reporte.id)}>
-                      <CheckCheck className="mr-2 h-4 w-4" /> Aprobar
+                      <CheckCheck className="mr-2 h-4 w-4"/> Aprobar
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-red-600 cursor-pointer" onClick={() => onRechazar(reporte.id)}>
-                      <X className="mr-2 h-4 w-4" /> Rechazar
+                      <X className="mr-2 h-4 w-4"/> Rechazar
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

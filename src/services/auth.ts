@@ -1,8 +1,8 @@
 "use server"
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { Response, prisma } from "@/services/utils";
 
-const prisma = new PrismaClient();
 
 export type Role = "user" | "researcher" | "moderator" | "admin" | "company"
 
@@ -10,11 +10,6 @@ type CredentialsLogin = {
   email: string;
   password: string;
 };
-
-type Response<T> = {
-  data: T | null,
-  error: { detail: string } | null;
-}
 
 type User = {
   id: string;
@@ -45,6 +40,7 @@ export async function login({ email, password }: CredentialsLogin): Promise<Resp
 
     if (!user || !user.password) {
       return {
+        success: false,
         data: null,
         error: { detail: 'Invalid email or password' },
       };
@@ -54,16 +50,17 @@ export async function login({ email, password }: CredentialsLogin): Promise<Resp
 
     if (!isPasswordValid) {
       return {
+        success: false,
         data: null,
         error: { detail: 'Invalid email or password' },
       };
     }
 
-    // Simulate access & refresh tokens
     const accessToken = process.env.AUTH_ACCESS_TOKEN || "";
     const refreshToken = process.env.AUTH_REFRESH_TOKEN || "";
 
     return {
+      success: true,
       data: {
         user: {
           id: user.id,
@@ -83,17 +80,25 @@ export async function login({ email, password }: CredentialsLogin): Promise<Resp
   } catch (err) {
     console.error('Error during login:', err);
     return {
+      success: false,
       data: null,
       error: { detail: 'Internal server error' },
     };
   }
 }
 
-export async function signup({ name, last_name, email, password, role }: SignupDTO): Promise<Response<Omit<User, 'password'>>> {
+export async function signup({
+  name,
+  last_name,
+  email,
+  password,
+  role
+}: SignupDTO): Promise<Response<Omit<User, 'password'>>> {
   try {
     // Validate role
     if (!["user", "researcher"].includes(role)) {
       return {
+        success: false,
         data: null,
         error: { detail: "No se puede registrar como otro rol que no sea `user` o `researcher`" }
       }
@@ -106,6 +111,7 @@ export async function signup({ name, last_name, email, password, role }: SignupD
 
     if (existingUser) {
       return {
+        success: false,
         data: null,
         error: { detail: "Ya existe un usuario con este correo electrónico" }
       }
@@ -129,9 +135,11 @@ export async function signup({ name, last_name, email, password, role }: SignupD
     })
 
     // Remove password from the returned user
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = newUser
 
     return {
+      success: true,
       data: userWithoutPassword,
       error: null
     }
@@ -142,6 +150,7 @@ export async function signup({ name, last_name, email, password, role }: SignupD
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         return {
+          success: false,
           data: null,
           error: { detail: "Ya existe un usuario con este correo electrónico" }
         }
@@ -149,11 +158,9 @@ export async function signup({ name, last_name, email, password, role }: SignupD
     }
 
     return {
+      success: false,
       data: null,
       error: { detail: "Ocurrió un error durante el registro" }
     }
   }
-}
-class CustomError extends Error {
-
 }

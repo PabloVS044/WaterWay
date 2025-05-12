@@ -112,16 +112,21 @@ model Event_Participant {
 }
 
 model Contamination_Report {
-  id          String    @id @default(uuid())
-  title       String    @db.VarChar(200)
-  description String    @db.VarChar(200)
+  id          String @id @default(uuid())
+  title       String @db.VarChar(200)
+  description String @db.VarChar(200)
   lat         Float
   lng         Float
-  status      String    @default("pending") @db.VarChar(50)
-  created_by  String
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
-  deleted_at  DateTime?
+  status      String @default("pending") @db.VarChar(50)
+
+  reject_reason String? @db.VarChar(400)
+  type          String? @db.VarChar(100)
+  resolved      Boolean @default(false)
+
+  created_by String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   creator User                  @relation("ReportCreator", fields: [created_by], references: [id], onDelete: NoAction)
   images  Contamination_Image[]

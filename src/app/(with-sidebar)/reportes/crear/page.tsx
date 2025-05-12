@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Camera, MapPin, Upload, X, Loader2 } from "lucide-react"
 import MapSelector from "@/components/map-selector"
+import { images } from "next/dist/build/webpack/config/blocks/images";
 
 const tiposReporte = [
   { id: "basura", nombre: "Contaminación por basura" },
@@ -110,6 +111,7 @@ export default function CrearReportePage() {
       toast.success("Reporte enviado con éxito", {
         description: "Tu reporte ha sido enviado y está pendiente de aprobación por un moderador.",
       })
+      console.log(imagenes);
       setIsSubmitting(false)
       router.push("/reportes/mis-reportes")
     }, 2000)
